@@ -65541,5 +65541,6 @@
         <domain includeSubdomains="true">192.168.255.253</domain>
         <domain includeSubdomains="true">192.168.255.254</domain>
         <domain includeSubdomains="true">192.168.255.255</domain>
+        <domain includeSubdomains="true">ts.net</domain>
     </domain-config>
 </network-security-config>
