@@ -300,9 +300,9 @@ describe('BlueWallet UI Tests - no wallets', () => {
     await element(by.id('ReceiveMoreOptionsButton')).tap();
     await element(by.id('AddressLabelOption')).tap();
     await element(by.id('AddressLabelInput')).replaceText('my recv label');
+    // Done saves the label and closes the sheet.
     await element(by.id('AddressLabelInput')).tapReturnKey();
     await waitForKeyboardToClose();
-    await element(by.id('AddressLabelSaveButton')).tap();
     await waitForId('ReceiveAddressLabel');
     await expect(element(by.text('my recv label'))).toBeVisible();
 
