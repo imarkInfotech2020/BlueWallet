@@ -1,12 +1,13 @@
 import { useCallback, useLayoutEffect, useRef } from 'react';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 import type { MenuActionHandlers, ScreenMenuAction } from '../blue_modules/menuActions';
-import useMenuElements from './useMenuElements';
+import useMenuActions from './useMenuActions';
+import { RecentMenuItem, recordRecentMenuItem } from '../components/Context/recentMenuItems';
 
 // Only the focused route owns commands. Proxies always call the latest committed handlers.
-export default function useScreenMenuActions(handlers: MenuActionHandlers) {
+export default function useScreenMenuActions(handlers: MenuActionHandlers, recentItem?: RecentMenuItem) {
   const route = useRoute();
-  const { registerMenuActions } = useMenuElements();
+  const { registerMenuActions } = useMenuActions();
   const latest = useRef(handlers);
   useLayoutEffect(() => {
     latest.current = handlers;
@@ -21,7 +22,8 @@ export default function useScreenMenuActions(handlers: MenuActionHandlers) {
       for (const action of enabledActions.split(',').filter(Boolean) as ScreenMenuAction[]) {
         proxies[action] = () => latest.current[action]?.();
       }
+      if (recentItem) recordRecentMenuItem(recentItem);
       return registerMenuActions(proxies, route.key);
-    }, [enabledActions, registerMenuActions, route.key]),
+    }, [enabledActions, recentItem, registerMenuActions, route.key]),
   );
 }

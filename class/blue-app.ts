@@ -28,6 +28,7 @@ import { getLNDHub } from '../helpers/lndHub';
 import { LightningArkWallet } from './wallets/lightning-ark-wallet.ts';
 import { hexToUint8Array, uint8ArrayToHex } from '../blue_modules/uint8array-extras';
 import { HDTaprootWallet } from './wallets/hd-taproot-wallet';
+import { isDesktop } from '../blue_modules/environment';
 
 let usedBucketNum: boolean | number = false;
 let savingInProgress = 0; // its both a flag and a counter of attempts to write to disk
@@ -934,6 +935,11 @@ export class BlueApp {
   }
 
   async moveRealmFilesToCacheDirectory() {
+    // On macOS, probing Documents can trigger a protected-folder permission
+    // request during startup. This legacy migration is only needed by the
+    // mobile app; desktop file access must remain user initiated.
+    if (isDesktop) return;
+
     const documentPath = RNFS.DocumentDirectoryPath; // Path to documentPath folder
     const cachePath = RNFS.CachesDirectoryPath; // Path to cachePath folder
     try {
